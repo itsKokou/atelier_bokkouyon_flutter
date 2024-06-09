@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/core/components/custom_form_field.dart';
 import 'package:flutter_app/core/constants/color_constants.dart';
 import 'package:flutter_app/core/models/login_model.dart';
+import 'package:flutter_app/core/services/security_service.dart';
+import 'package:flutter_app/pages/accueil/accueil_page.dart';
+import 'package:flutter_app/pages/register/register_page.dart';
 import 'package:flutter_app/pages/verification/verification_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,10 +19,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passworController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   String errorText = "";
-  bool _rememberMe = false;
   LoginModel? _loginModel;
 
   @override
@@ -88,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                         hintText: 'Entrez votre email/username',
                         validator: (val) {
                           if (val != null && val.isEmpty) {
-                            return 'Enter valid name';
+                            return 'Entrer un email valide';
                           }
                           return null;
                         },
@@ -96,15 +98,14 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(
                         height: 5,
                       ),
-                      
                       CustomFormField(
-                        controller: _passworController,
+                        controller: _passwordController,
                         icon: Icons.visibility_off_outlined,
                         obscureText: true,
                         hintText: 'Entrez votre mot de passe',
                         validator: (val) {
                           if (val != null && val.isEmpty) {
-                            return 'Enter valid name';
+                            return 'Entrer votre mot de passe';
                           }
                           return null;
                         },
@@ -114,12 +115,12 @@ class _LoginPageState extends State<LoginPage> {
                         child: Container(
                           alignment: Alignment.centerRight,
                           child: const Text(
-                          "Mot de passe oublié?",
-                          textAlign: TextAlign.end,
-                          style: TextStyle(
-                              color: secondaryColor,
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold),
+                            "Mot de passe oublié?",
+                            textAlign: TextAlign.end,
+                            style: TextStyle(
+                                color: secondaryColor,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
@@ -127,9 +128,29 @@ class _LoginPageState extends State<LoginPage> {
                         height: 45,
                       ),
                       InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                          Navigator.pushNamed(context, VerificationPage.routeName);
+                        onTap: () async {
+                          if (_formKey.currentState!.validate()) {
+                            //Formualaire valide
+                            //Prendre les valeurs et les mettre dans les controllers
+                            _formKey.currentState!.save();
+                            LoginModel loginModel = LoginModel(
+                                username: _usernameController.text,
+                                password: _passwordController.text);
+                            //Se connecter
+                            await SecurityService.getConnectedUser(loginModel);
+                            if (SecurityService.connectedUser != null) {
+                              //Connexion réussi
+                              Navigator.pop(context);
+                              Navigator.pushNamed(
+                                  context, AccueilPage.routeName);
+                            } else {
+                              //echec connexion
+                              setState(() {
+                                //Pour lui dire qu'il y a un changement
+                                errorText = "Login ou mot de passe incorrect";
+                              });
+                            }
+                          }
                         },
                         child: Container(
                           alignment: Alignment.center,
@@ -174,7 +195,9 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
-                                      
+                                      Navigator.pop(context);
+                                      Navigator.pushNamed(
+                                          context, RegisterPage.routeName);
                                     },
                                 ),
                               ],

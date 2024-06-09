@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/core/components/custom_form_field.dart';
 import 'package:flutter_app/core/constants/color_constants.dart';
 import 'package:flutter_app/core/models/register_model.dart';
+import 'package:flutter_app/core/services/security_service.dart';
 import 'package:flutter_app/pages/login/login_page.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -16,12 +17,11 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passworController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nomCompletController = TextEditingController();
   final TextEditingController _telephoneController = TextEditingController();
 
   String errorText = "";
-  bool _rememberMe = false;
   RegisterModel? _registerModel;
 
   @override
@@ -88,9 +88,16 @@ class _RegisterPageState extends State<RegisterPage> {
                         controller: _usernameController,
                         icon: Icons.email_outlined,
                         hintText: 'Entrez votre email/username',
-                        validator: (val) {
-                          if (val != null && val.isEmpty) {
-                            return 'Enter valid name';
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "L'email est obligatoire";
+                          }
+                          // Regex for email validation
+                          String pattern =
+                              r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                          RegExp regex = RegExp(pattern);
+                          if (!regex.hasMatch(value)) {
+                            return 'Adresse email invalide ';
                           }
                           return null;
                         },
@@ -101,7 +108,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         hintText: 'Entrez votre nom complet',
                         validator: (val) {
                           if (val != null && val.isEmpty) {
-                            return 'Enter valid name';
+                            return 'Entrer un nom valid';
                           }
                           return null;
                         },
@@ -112,53 +119,77 @@ class _RegisterPageState extends State<RegisterPage> {
                         hintText: 'Entrez votre telephone',
                         validator: (val) {
                           if (val != null && val.isEmpty) {
-                            return 'Enter valid name';
+                            return 'Entrer un téléphone';
                           }
                           return null;
                         },
                       ),
                       CustomFormField(
-                        controller: _passworController,
+                        controller: _passwordController,
                         icon: Icons.visibility_off_outlined,
                         obscureText: true,
                         hintText: 'Entrez votre mot de passe',
                         validator: (val) {
                           if (val != null && val.isEmpty) {
-                            return 'Enter valid name';
+                            return 'Entrer un mot de passe valide';
                           }
                           return null;
                         },
                       ),
-                      
-                    const SizedBox(
+                      const SizedBox(
                         height: 40,
                       ),
-
-                    InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                        Navigator.pushNamed(context, LoginPage.routeName);
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 50,
-                        width: 350,
-                        decoration: BoxDecoration(
-                          color: secondaryColor,
-                          borderRadius: BorderRadius.circular(15)
-                        ),
-                        child: const Text('Continuez', 
-                        style: TextStyle(
-                          color: Colors.white, 
-                          fontSize: 22, 
-                          fontWeight: FontWeight.bold),
+                      InkWell(
+                        onTap: () async {
+                                  if (_formKey.currentState!.validate()) {
+                                    //Formualaire valide
+                                    //Prendre les valeurs et les mettre dans les controllers
+                                    _formKey.currentState!.save();
+                                    _registerModel = RegisterModel(
+                                        username: _usernameController.text,
+                                        password: _passwordController.text,
+                                        nomComplet:
+                                            _nomCompletController.text,
+                                        telephone:
+                                            _telephoneController.text);
+                                    //Se connecter
+                                    var user = await SecurityService.createPassager(
+                                        _registerModel!);
+                                    if (user != null) {
+                                      //Création réussi
+                                      Navigator.pop(context);
+                                      Navigator.pushNamed(
+                                          context, LoginPage.routeName);
+                                    } else {
+                                      //Erreur enregistrement
+                                      setState(() {
+                                        errorText =
+                                            "Erreur d'enrégistrement !!!";
+                                        SecurityService.connectedUser =
+                                            null;
+                                      });
+                                    }
+                                  };
+                                },
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 50,
+                          width: 350,
+                          decoration: BoxDecoration(
+                              color: secondaryColor,
+                              borderRadius: BorderRadius.circular(15)),
+                          child: const Text(
+                            'Continuez',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
-                    ),
-
-                    const SizedBox(
+                      const SizedBox(
                         height: 30,
-                    ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 22),
                         child: Center(
@@ -175,20 +206,23 @@ class _RegisterPageState extends State<RegisterPage> {
                                 TextSpan(
                                   text: 'Connectez-vous',
                                   style: const TextStyle(
-                                    color: secondaryColor, // Color for the clickable text
+                                    color:
+                                        secondaryColor, // Color for the clickable text
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'Montserrat',
                                     fontSize: 17,
                                   ),
-                                recognizer: TapGestureRecognizer()..onTap = () {
-                                  print('Connectez-vous tapped');
-                                },
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = (){
+                                      Navigator.pop(context);
+                                        Navigator.pushNamed(
+                                            context, LoginPage.routeName);
+                                    }
                                 ),
                               ],
                             ),
+                          ),
                         ),
-                      ),
-
                       )
                     ]),
               ),
