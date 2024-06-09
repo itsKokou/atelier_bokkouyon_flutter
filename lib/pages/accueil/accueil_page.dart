@@ -74,7 +74,9 @@ class AccueilPage extends StatelessWidget {
                   const SizedBox(height: 30),
                   // deuxiem div on
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+
+                    },
                     child: Padding(
                       padding: const EdgeInsets.only(top: 30),
                       child: Container(
@@ -130,8 +132,7 @@ class AccueilPage extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
-                      Navigator.popAndPushNamed(
-                          context, PayementOperateur.routeName);
+                      Navigator.pushNamed(context, PayementOperateur.routeName);
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(top: 30),

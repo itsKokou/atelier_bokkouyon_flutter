@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/accueil/accueil_page.dart';
+import 'package:flutter_app/pages/payement/Payement_page.dart';
 
 class PayementOperateur extends StatelessWidget {
   const PayementOperateur({super.key});
-  static String routeName = "/payement_operateur";
+  static String routeName = "/payementOperateur";
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,6 @@ class PayementOperateur extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.pop(context);
                       Navigator.pushNamed(context, AccueilPage.routeName);
                     },
                     child: const Text(
@@ -110,7 +110,10 @@ class PayementOperateur extends StatelessWidget {
               height: 20,
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, PayementPage.routeName);
+              },
               child: Container(
                 height: 90,
                 decoration: BoxDecoration(
@@ -210,9 +213,9 @@ class PayementOperateur extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Image.asset("assets/kpey.png"),
+                    Image.asset("assets/cash.png"),
                     Text(
-                      "Kpey",
+                      "Cash",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     )
@@ -248,9 +251,9 @@ class PayementOperateur extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Image.asset("assets/kpey.png"),
+                    Image.asset("assets/upi.png"),
                     Text(
-                      "Kpey",
+                      "UPI/Net Banking",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     )
