@@ -4,6 +4,8 @@ import 'package:flutter_app/pages/activeLocalisation/active_localisation.dart';
 import 'package:flutter_app/pages/carrouselPage/carrousel_page.dart';
 import 'package:flutter_app/pages/home/home_page.dart';
 import 'package:flutter_app/pages/login/login_page.dart';
+import 'package:flutter_app/pages/payement/Payement_operateur_page.dart';
+import 'package:flutter_app/pages/payement/Payement_page.dart';
 import 'package:flutter_app/pages/register/register_page.dart';
 import 'package:flutter_app/pages/verification/verification_page.dart';
 
@@ -18,7 +20,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home:  const HomePage(),
+      home: const HomePage(),
       initialRoute: "/home",
       routes: {
         "/home": (context) => const HomePage(),
@@ -28,6 +30,8 @@ class MainApp extends StatelessWidget {
         "/login": (context) => const LoginPage(),
         "/accueil": (context) => const AccueilPage(),
         "/verification": (context) => const VerificationPage(),
+        "/payementOperateur": (context) => const PayementOperateur(),
+        "/payementPage": (context) => const PayementPage(),
       },
     );
   }

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/constants/color_constants.dart';
 import 'package:flutter_app/core/constants/font_constants.dart';
+import 'package:flutter_app/pages/payement/Payement_operateur_page.dart';
 
 class AccueilPage extends StatelessWidget {
   const AccueilPage({super.key});
   static String routeName = "/accueil";
 
-    @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(),
+      appBar: AppBar(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
@@ -37,7 +38,10 @@ class AccueilPage extends StatelessWidget {
                         children: [
                           Text(
                             "Choisir",
-                            style: TextStyle(color: primaryColor, fontSize: 40, fontFamily: police),
+                            style: TextStyle(
+                                color: primaryColor,
+                                fontSize: 40,
+                                fontFamily: police),
                           )
                         ],
                       ),
@@ -70,7 +74,10 @@ class AccueilPage extends StatelessWidget {
                   const SizedBox(height: 30),
                   // deuxiem div on
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, PayementOperateur.routeName);
+                    },
                     child: Padding(
                       padding: const EdgeInsets.only(top: 30),
                       child: Container(
@@ -92,7 +99,10 @@ class AccueilPage extends StatelessWidget {
                               // Text on
                               const Text(
                                 "Conducteur",
-                                style: TextStyle(fontSize: 30, fontFamily: police, color: primaryColor),
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    fontFamily: police,
+                                    color: primaryColor),
                               )
                               // Text off
                             ],
@@ -112,14 +122,19 @@ class AccueilPage extends StatelessWidget {
                         color: const Color.fromARGB(255, 153, 197, 227),
                         borderRadius: BorderRadius.circular(40)),
                     child: const Center(
-                        child: Text("OR", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500))),
+                        child: Text("OR",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w500))),
                   ),
                   // troisieme div off
 
                   const SizedBox(height: 20),
                   // quatrieme div on
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, PayementOperateur.routeName);
+                    },
                     child: Padding(
                       padding: const EdgeInsets.only(top: 30),
                       child: Container(
@@ -141,7 +156,10 @@ class AccueilPage extends StatelessWidget {
                               // Text on
                               const Text(
                                 "Passager",
-                                style: TextStyle(fontSize: 30,fontFamily: police, color: primaryColor),
+                                style: TextStyle(
+                                    fontSize: 30,
+                                    fontFamily: police,
+                                    color: primaryColor),
                               )
                               // Text off
                             ],

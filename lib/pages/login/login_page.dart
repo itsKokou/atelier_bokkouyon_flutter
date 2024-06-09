@@ -137,6 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                                 username: _usernameController.text,
                                 password: _passwordController.text);
                             //Se connecter
+                            
                             await SecurityService.getConnectedUser(loginModel);
                             if (SecurityService.connectedUser != null) {
                               //Connexion réussi
